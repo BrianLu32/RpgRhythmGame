@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Melanchall.DryWetMidi.Core;
+using Melanchall.DryWetMidi.Interaction;
+using MidiNote = Melanchall.DryWetMidi.Interaction.Note;
+using System.IO;
 
 [RequireComponent(typeof(AudioSource))]
 public class MusicController : MonoBehaviour
@@ -13,14 +17,23 @@ public class MusicController : MonoBehaviour
 
     // Attempt of creating a chart
     public static MusicController musicControllerInstance;
+    public float songDelayInSeconds;
     public int inputDelayInMilliseconds;
+    public double marginOfErrorInSeconds; 
     public string fileLocation;
     public float noteTime;
     public float noteSpawnY;
     public float noteTapY;
+    public Lane[] lanes;
 
     public float noteDespawnY {
         get { return noteTapY - (noteSpawnY - noteTapY); }
+    }
+
+    public static MidiFile midiFile;
+    void Start() {
+        musicControllerInstance = this;
+        ReadMidiFile();
     }
 
     void Update() {
@@ -28,7 +41,27 @@ public class MusicController : MonoBehaviour
             // Debug.Log("Music" + audioSource.timeSamples);
             float samepledTime = (audioSource.timeSamples + offset) / (audioSource.clip.frequency * _interval.getIntervalLength(bpm));
             _interval.checkForNewInterval(samepledTime);
+            // Debug.Log(samepledTime);
         }
+    }
+ 
+    private void ReadMidiFile() {
+        midiFile = MidiFile.Read(Application.streamingAssetsPath + "/" + fileLocation);
+        ICollection<MidiNote> notes = midiFile.GetNotes();
+        MidiNote[] array = new MidiNote[notes.Count];
+        notes.CopyTo(array, 0);
+        
+        foreach(Lane lane in lanes) lane.SetTimeStamps(array);
+
+        Invoke(nameof(StartSong), songDelayInSeconds);
+    }
+
+    private void StartSong() {
+        audioSource.Play();
+    }
+
+    public static double GetAudioSourceTime() {
+        return (double)(musicControllerInstance.audioSource.timeSamples + musicControllerInstance.offset) / (musicControllerInstance.audioSource.clip.frequency);
     }
 }
 
