@@ -18,17 +18,7 @@ public class MusicController : MonoBehaviour
     // Attempt of creating a chart
     public static MusicController musicControllerInstance;
     public float songDelayInSeconds;
-    public int inputDelayInMilliseconds;
-    public double marginOfErrorInSeconds; 
     public string fileLocation;
-    public float noteTime;
-    public float noteSpawnY;
-    public float noteTapY;
-    public Lane[] lanes;
-
-    public float noteDespawnY {
-        get { return noteTapY - (noteSpawnY - noteTapY); }
-    }
 
     public static MidiFile midiFile;
     void Start() {
@@ -51,7 +41,7 @@ public class MusicController : MonoBehaviour
         MidiNote[] array = new MidiNote[notes.Count];
         notes.CopyTo(array, 0);
         
-        foreach(Lane lane in lanes) lane.SetTimeStamps(array);
+        foreach(Lane lane in DdrManager.ddrManagerInstance.lanes) lane.SetTimeStamps(array);
 
         Invoke(nameof(StartSong), songDelayInSeconds);
     }

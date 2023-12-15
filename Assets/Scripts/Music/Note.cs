@@ -19,13 +19,13 @@ public class Note : MonoBehaviour
 
         // Note time accounts for the time between the spawnY and the tapY
         // Want the time between spawnY and tapY
-        float time = (float)(timeSinceInstantiated / (MusicController.musicControllerInstance.noteTime * 2));
+        float time = (float)(timeSinceInstantiated / (DdrManager.ddrManagerInstance.noteTime * 2));
 
         if(time > 1) { Destroy(gameObject); }
         else { 
             transform.localPosition = Vector3.Lerp(
-                Vector3.up * MusicController.musicControllerInstance.noteSpawnY, 
-                Vector3.up * MusicController.musicControllerInstance.noteDespawnY, 
+                DdrManager.ddrManagerInstance.noteSpawnPos, 
+                DdrManager.ddrManagerInstance.noteDespawnPos, 
                 time
             ); 
         }

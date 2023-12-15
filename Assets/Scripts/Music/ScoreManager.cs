@@ -7,7 +7,7 @@ public class ScoreManager : MonoBehaviour
     public static ScoreManager scoreManagerInstance;
     public AudioSource hitSfx;
     public AudioSource missSfx;
-    public TMPro.TextMeshProUGUI scoreText;
+    // public TMPro.TextMeshProUGUI scoreText;
     static int comboScore;
 
     // Start is called before the first frame update
@@ -20,7 +20,7 @@ public class ScoreManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        scoreText.text = comboScore.ToString();
+        // scoreText.text = comboScore.ToString();
     }
 
     public static void Hit() {

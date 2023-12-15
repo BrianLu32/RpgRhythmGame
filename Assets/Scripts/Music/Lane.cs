@@ -27,7 +27,7 @@ public class Lane : MonoBehaviour
     {
         if(spawnIndex < timeStamps.Count) {
             // Want to spawn our notes x time before player taps it
-            if(MusicController.GetAudioSourceTime() >= timeStamps[spawnIndex] - MusicController.musicControllerInstance.noteTime) {
+            if(MusicController.GetAudioSourceTime() >= timeStamps[spawnIndex] - DdrManager.ddrManagerInstance.noteTime) {
                 GameObject note = Instantiate(notePrefab, transform);
                 notes.Add(note.GetComponent<Note>());
                 note.GetComponent<Note>().assignedTime = (float)timeStamps[spawnIndex];
@@ -37,8 +37,8 @@ public class Lane : MonoBehaviour
 
         if(inputIndex < timeStamps.Count) {
             double timeStamp = timeStamps[inputIndex];
-            double marginOfError = MusicController.musicControllerInstance.marginOfErrorInSeconds;
-            double audioTime = MusicController.GetAudioSourceTime() - (MusicController.musicControllerInstance.inputDelayInMilliseconds / 1000f);
+            double marginOfError = DdrManager.ddrManagerInstance.marginOfErrorInSeconds;
+            double audioTime = MusicController.GetAudioSourceTime() - (DdrManager.ddrManagerInstance.inputDelayInMilliseconds / 1000f);
 
             if(Input.GetKeyDown(input)) {
                 if(Math.Abs(audioTime - timeStamp) < marginOfError) {
