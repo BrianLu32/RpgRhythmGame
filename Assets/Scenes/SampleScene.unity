@@ -157,9 +157,7 @@ MonoBehaviour:
   noteTime: 1
   noteSpawnPos: {x: 0, y: 7, z: 3}
   noteTapPos: {x: 0, y: -4, z: 0}
-  lanes:
-  - {fileID: 1917774853}
-  - {fileID: 158703414}
+  numberOfLanes: 2
 --- !u!4 &40128651
 Transform:
   m_ObjectHideFlags: 0
@@ -169,7 +167,7 @@ Transform:
   m_GameObject: {fileID: 40128649}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: -3.2799997}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -206,7 +204,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noteRestriction: 7
   input: 109
-  notePrefab: {fileID: 4607223560246359891, guid: 62f48c6e612681a4b9484ed15468179b, type: 3}
   timeStamps: []
 --- !u!4 &158703415
 Transform:
@@ -1411,7 +1408,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noteRestriction: 9
   input: 122
-  notePrefab: {fileID: 6679152604847682050, guid: 498f8563b37808a4390a742157589933, type: 3}
   timeStamps: []
 --- !u!4 &1917774854
 Transform:

@@ -23,7 +23,7 @@ public class MusicController : MonoBehaviour
     public static MidiFile midiFile;
     void Start() {
         musicControllerInstance = this;
-        ReadMidiFile();
+        Invoke(nameof(StartSong), songDelayInSeconds);
     }
 
     void Update() {
@@ -35,16 +35,17 @@ public class MusicController : MonoBehaviour
         }
     }
  
-    private void ReadMidiFile() {
-        midiFile = MidiFile.Read(Application.streamingAssetsPath + "/" + fileLocation);
-        ICollection<MidiNote> notes = midiFile.GetNotes();
-        MidiNote[] array = new MidiNote[notes.Count];
-        notes.CopyTo(array, 0);
+    // private void ReadMidiFile() {
+    //     midiFile = MidiFile.Read(Application.streamingAssetsPath + "/" + fileLocation);
+    //     ICollection<MidiNote> notes = midiFile.GetNotes();
+    //     MidiNote[] array = new MidiNote[notes.Count];
+    //     notes.CopyTo(array, 0);
         
-        foreach(Lane lane in DdrManager.ddrManagerInstance.lanes) lane.SetTimeStamps(array);
+    //     // DdrManager.ddrManagerInstance.SetTimestamps(array);
+    //     // foreach(Lane lane in DdrManager.ddrManagerInstance.GetLanes()) lane.SetTimeStamps(array);
 
-        Invoke(nameof(StartSong), songDelayInSeconds);
-    }
+        
+    // }   
 
     private void StartSong() {
         audioSource.Play();

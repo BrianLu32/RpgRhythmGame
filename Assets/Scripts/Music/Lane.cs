@@ -9,7 +9,7 @@ public class Lane : MonoBehaviour
 {
     public Melanchall.DryWetMidi.MusicTheory.NoteName noteRestriction;
     public KeyCode input;
-    public GameObject notePrefab;
+    private GameObject notePrefab;
     List<Note> notes = new List<Note>();
     public List<double> timeStamps = new List<double>();
 
@@ -19,7 +19,7 @@ public class Lane : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        notePrefab = Resources.Load<GameObject>("Prefabs/LanePrefabs/LeftNote");
     }
 
     // Update is called once per frame
@@ -60,7 +60,7 @@ public class Lane : MonoBehaviour
     public void SetTimeStamps(MidiNote[] array) {
         foreach(MidiNote note in array) {
             if(note.NoteName == noteRestriction) {
-                MetricTimeSpan metricTimeSpan = TimeConverter.ConvertTo<MetricTimeSpan>(note.Time, MusicController.midiFile.GetTempoMap());
+                MetricTimeSpan metricTimeSpan = TimeConverter.ConvertTo<MetricTimeSpan>(note.Time, DdrManager.midiFile.GetTempoMap());
                 timeStamps.Add((double)metricTimeSpan.Minutes * 60f + metricTimeSpan.Seconds + (double)metricTimeSpan.Milliseconds / 1000f);
             }
         }

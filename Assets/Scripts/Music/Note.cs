@@ -25,7 +25,7 @@ public class Note : MonoBehaviour
         else { 
             transform.localPosition = Vector3.Lerp(
                 DdrManager.ddrManagerInstance.noteSpawnPos, 
-                DdrManager.ddrManagerInstance.noteDespawnPos, 
+                DdrManager.ddrManagerInstance.NoteDespawnPos, 
                 time
             ); 
         }
