@@ -18,11 +18,13 @@ public class MusicController : MonoBehaviour
     // Attempt of creating a chart
     public static MusicController musicControllerInstance;
     public float songDelayInSeconds;
-    public string fileLocation;
 
     public static MidiFile midiFile;
     void Start() {
         musicControllerInstance = this;
+
+        // audioSource = Resources.Load<AudioSource>("Songs/AIKA_Starry_Eyed_Dreamer");
+
         Invoke(nameof(StartSong), songDelayInSeconds);
     }
 

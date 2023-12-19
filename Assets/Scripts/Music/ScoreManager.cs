@@ -5,8 +5,10 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager scoreManagerInstance;
-    public AudioSource hitSfx;
-    public AudioSource missSfx;
+    private AudioClip hitSfx;
+    private AudioClip missSfx;
+    private GameObject hitAudioSource;
+    private GameObject missAudioSource;
     // public TMPro.TextMeshProUGUI scoreText;
     static int comboScore;
 
@@ -15,6 +17,22 @@ public class ScoreManager : MonoBehaviour
     {
         scoreManagerInstance = this;
         comboScore = 0;
+
+        // Load in SFX
+        hitSfx = Resources.Load<AudioClip>("Sfx/hit");
+        missSfx = Resources.Load<AudioClip>("Sfx/miss");
+
+        hitAudioSource = new("Hit");
+        hitAudioSource.transform.parent = transform;
+        hitAudioSource.AddComponent<AudioSource>();
+        hitAudioSource.GetComponent<AudioSource>().clip = hitSfx;
+        hitAudioSource.GetComponent<AudioSource>().volume = 0.1f;
+
+        missAudioSource = new("Miss");
+        missAudioSource.transform.parent = transform;
+        missAudioSource.AddComponent<AudioSource>();
+        missAudioSource.GetComponent<AudioSource>().clip = missSfx;
+        missAudioSource.GetComponent<AudioSource>().volume = 0.1f;
     }
 
     // Update is called once per frame
@@ -25,11 +43,11 @@ public class ScoreManager : MonoBehaviour
 
     public static void Hit() {
         comboScore++;
-        scoreManagerInstance.hitSfx.Play();
+        scoreManagerInstance.hitAudioSource.GetComponent<AudioSource>().Play();
     }
 
     public static void Miss() {
         comboScore = 0;
-        scoreManagerInstance.missSfx.Play();
+        scoreManagerInstance.missAudioSource.GetComponent<AudioSource>().Play();
     }
 }

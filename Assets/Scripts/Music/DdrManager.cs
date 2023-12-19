@@ -5,7 +5,6 @@ using UnityEngine;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using MidiNote = Melanchall.DryWetMidi.Interaction.Note;
-using MidiNoteName = Melanchall.DryWetMidi.MusicTheory.NoteName;
 
 public class DdrManager : MonoBehaviour
 {
@@ -21,8 +20,6 @@ public class DdrManager : MonoBehaviour
 
     public int numberOfLanes;
     private readonly List<GameObject> lanes = new();
-    // private readonly KeyCode[] inputKeyCodes = { KeyCode.Z, KeyCode.M };
-    // private readonly MidiNoteName[] noteRestrictions = { MidiNoteName.A, MidiNoteName.G };
     private readonly Vector3[] lanePositions = { new(-1f, 0f, 0f), new(1f, 0f, 0f) };
 
     private GameObject judgementLine;
@@ -46,6 +43,15 @@ public class DdrManager : MonoBehaviour
         //     Debug.Log(newLane.name);
         //     Instantiate(newLane, lanePositions[i], Quaternion.Euler(0, 0, 0));
         // }
+        LoadLanes();
+        // LoadMusicController();
+        LoadScoreMananger();
+        Instantiate(judgementLine, transform);
+
+        ReadMidiFile();
+    }
+
+    private void LoadLanes() {
         for(int i = 0; i < numberOfLanes; i++) {
             GameObject newLane = new("Lane" + i);
             newLane.AddComponent<Lane>();
@@ -55,11 +61,18 @@ public class DdrManager : MonoBehaviour
             newLane.transform.position = lanePositions[i];
             lanes.Add(newLane);
         }
+    }
 
-        judgementLine.transform.parent = transform;
-        Instantiate(judgementLine, transform);
+    private void LoadMusicController() {
+        GameObject musicController = new("MusicController");
+        musicController.AddComponent<MusicController>();
+        musicController.transform.parent = transform;
+    }
 
-        ReadMidiFile();
+    private void LoadScoreMananger() {
+        GameObject scoreManager = new("ScoreManager");
+        scoreManager.AddComponent<ScoreManager>();
+        scoreManager.transform.parent = transform;
     }
 
     private void ReadMidiFile() {
