@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NpcScript : MonoBehaviour
+public class BillboardEffect : MonoBehaviour
 {
     [SerializeField] private BillboardType billboardType;
     public enum BillboardType { LookAtCamera, CameraForward };
