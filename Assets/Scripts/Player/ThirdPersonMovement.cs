@@ -19,7 +19,7 @@ public class ThirdPersonMovement : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
-    Vector3 velocity;
+    Vector3 nonForwardMovement;
     bool isGrounded;
 
     public Animator animator;
@@ -29,7 +29,6 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
-        // Debug.Log("Horizontal: " + horizontal + "; Vertical: " + vertical);
 
         // Animation Controller
         animator.SetFloat("HorizontalSpeed", Mathf.Abs(horizontal));
@@ -37,22 +36,22 @@ public class ThirdPersonMovement : MonoBehaviour
 
         // Check if player is on the ground
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        Debug.Log(isGrounded);
-        if(isGrounded && velocity.y < 0) {
-            velocity.y = -2f;
+        if(isGrounded && nonForwardMovement.y < 0) {
+            nonForwardMovement.y = -2f;
             animator.SetBool("IsJumping", false);
         }
         if(Input.GetButtonDown("Jump") && isGrounded) {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            nonForwardMovement.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             animator.SetBool("IsJumping", true);
         }
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
-
+        nonForwardMovement.y += gravity * Time.deltaTime;
+        controller.Move(nonForwardMovement * Time.deltaTime);
 
         float sprintMultiplier = Input.GetKey(sprintKey) ? 1.5f : 1f;
 
         Vector3 horizontalMovement = transform.right * horizontal;
+        nonForwardMovement.x = horizontalMovement.x;
+        nonForwardMovement.z = horizontalMovement.z;
 
         // Keeps the player oriented towards the camera while being able to move forward based on camera orientation
         Vector3 forwardDirection = new Vector3(0f, 0f, vertical).normalized;
@@ -62,8 +61,11 @@ public class ThirdPersonMovement : MonoBehaviour
         if(forwardDirection.magnitude >= 0.1) {
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             controller.Move(speed * sprintMultiplier * Time.deltaTime * moveDirection.normalized);
-            
         }
-        controller.Move(speed * sprintMultiplier * Time.deltaTime * horizontalMovement);
+        if(forwardDirection.z < 0) {
+            nonForwardMovement.x *= -1;
+            nonForwardMovement.z *= -1;
+        }
+        controller.Move(speed * sprintMultiplier * Time.deltaTime * nonForwardMovement);
     }
 }
