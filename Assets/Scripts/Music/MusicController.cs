@@ -19,7 +19,7 @@ public class MusicController : MonoBehaviour
     public static MusicController musicControllerInstance;
     public float songDelayInSeconds;
 
-    public static MidiFile midiFile;
+    // public static MidiFile midiFile;
     void Start() {
         musicControllerInstance = this;
 
