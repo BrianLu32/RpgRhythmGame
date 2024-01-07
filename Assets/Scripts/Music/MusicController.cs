@@ -15,6 +15,9 @@ public class MusicController : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private Intervals[] intervals;
 
+    public List<float> timeStamps = new();
+    public float step;
+
     // Attempt of creating a chart
     public static MusicController musicControllerInstance;
     public float songDelayInSeconds;
@@ -26,12 +29,16 @@ public class MusicController : MonoBehaviour
         // audioSource = Resources.Load<AudioSource>("Songs/AIKA_Starry_Eyed_Dreamer");
 
         Invoke(nameof(StartSong), songDelayInSeconds);
+
+        // Debug.Log(audioSource.clip.samples);
+        // Debug.Log(60 / (bpm * step) * audioSource.clip.frequency);
     }
 
     void Update() {
+        // Debug.Log("Music: " + audioSource.timeSamples);
         foreach(Intervals _interval in intervals) {
-            // Debug.Log("Music" + audioSource.timeSamples);
             float samepledTime = (audioSource.timeSamples + offset) / (audioSource.clip.frequency * _interval.getIntervalLength(bpm));
+            Debug.Log("Sampled Time: " + samepledTime);
             _interval.checkForNewInterval(samepledTime);
             // Debug.Log(samepledTime);
         }
@@ -71,6 +78,7 @@ public class Intervals {
     public void checkForNewInterval(float interval) {
         if(Mathf.FloorToInt(interval) != lastInterval) {
             lastInterval =Mathf.FloorToInt(interval);
+            // Debug.Log(interval);
             trigger.Invoke();
         }
     }
