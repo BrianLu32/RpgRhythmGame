@@ -24,12 +24,12 @@ public class Timeline : MonoBehaviour
     {
         // timelineInstance = this;
         controller = GetComponent<TimelineController>();
-        controller.OnVariableChange += VariableChangeHandler;
+        controller.OnBeatValueChange += BeatValueChangeHandler;
 
         CreateTimelineMarkers(bpm, (int)currentBeatValue, offset);
     }
 
-    private void VariableChangeHandler(int newVal) 
+    private void BeatValueChangeHandler(int newVal) 
     {
         int timelineChildCount = gameObject.transform.childCount;
         for(int i = 0; i < timelineChildCount; i++) {
@@ -56,40 +56,47 @@ public class Timeline : MonoBehaviour
         }
 
         float currentSample = samplePeriod;
+        controller.timelineMarkerArraySize = audioSource.clip.length;
         for(int i = 0; i < audioSource.clip.length; i++) {
             sampleSets.Add(currentSample + sampleOffset);
             currentSample += samplePeriod;
 
-            // sampleMarker.GetComponent<Marker>().timeStamp = currentSample + sampleOffset;
-            // sampleMarker.GetComponent<Marker>().beatValue = currentBeatValue;
             GameObject marker = Instantiate(sampleMarker, sampleSpawnInterval, Quaternion.identity, transform);
-            marker.GetComponent<Marker>().timeStamp = sampleSets[i];
-            marker.name += i;
-            
+            Marker markerScript = marker.GetComponent<Marker>();
+            SpriteRenderer markerSpriteRenderer = marker.GetComponent<SpriteRenderer>();
+            Vector3 currentMarkerScale = marker.transform.localScale;
+
+            markerScript.timeStamp = sampleSets[i];
+            marker.name = "Marker " + i;
             switch(i % 4)
             {
                 case 0:
-                    marker.GetComponent<Marker>().beatValue = BeatValue.WholeBeat;
-                    marker.GetComponent<SpriteRenderer>().color = Color.white;
+                    markerScript.beatValue = BeatValue.WholeBeat;
+                    // markerScript.yScaleMultiplier = 1.0f;
+                    markerSpriteRenderer.color = Color.white;
                     break;
                 case 1:
-                    marker.GetComponent<Marker>().beatValue = BeatValue.QuarterBeat;
-                    marker.GetComponent<SpriteRenderer>().color = Color.cyan;
+                    markerScript.beatValue = BeatValue.QuarterBeat;
+                    // markerScript.yScaleMultiplier = 1.0f;
+                    markerSpriteRenderer.color = Color.cyan;
                     break;
                 case 2:
-                    marker.transform.localScale = new Vector3(marker.transform.localScale.x, marker.transform.localScale.y * 1.5f, marker.transform.localScale.z);
-                    marker.GetComponent<Marker>().beatValue = BeatValue.HalfBeat;
-                    marker.GetComponent<SpriteRenderer>().color = Color.red;
+                    marker.transform.localScale = new Vector3(currentMarkerScale.x, currentMarkerScale.y * 1.5f, currentMarkerScale.z);
+                    // markerScript.yScaleMultiplier = 1.5f;
+                    markerScript.beatValue = BeatValue.HalfBeat;
+                    markerSpriteRenderer.color = Color.red;
                     break;
                 case 3:
-                    marker.GetComponent<Marker>().beatValue = BeatValue.QuarterBeat;
-                    marker.GetComponent<SpriteRenderer>().color = Color.cyan;
+                    markerScript.beatValue = BeatValue.QuarterBeat;
+                    // markerScript.yScaleMultiplier = 1.0f;
+                    markerSpriteRenderer.color = Color.cyan;
                     break;
                 default:
                     break;
             }
             if(i % 16 == 0) {
-                marker.transform.localScale = new Vector3(marker.transform.localScale.x, marker.transform.localScale.y * 2, marker.transform.localScale.z);
+                marker.transform.localScale = new Vector3(currentMarkerScale.x, currentMarkerScale.y * 2, currentMarkerScale.z);
+                // markerScript.yScaleMultiplier = 2.0f;
             }
             sampleSpawnInterval += new Vector3(2f, 0f, 0f);
         }

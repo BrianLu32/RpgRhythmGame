@@ -23,12 +23,12 @@ public class LookAt : MonoBehaviour
         InteractRayCast();
     }
 
-    void InteractRayCast() {
+    public GameObject InteractRayCast() {
         Vector3 playerPosition = transform.position;
         Vector3 forwardDirection = transform.forward;
 
         Ray interactionRay = new(playerPosition, forwardDirection);
-        float interactionRayLength = 15.0f;
+        float interactionRayLength = 50.0f;
 
         Vector3 interactionRayEndpoint = forwardDirection * interactionRayLength;
         Debug.DrawLine(playerPosition, interactionRayEndpoint);
@@ -36,16 +36,18 @@ public class LookAt : MonoBehaviour
         bool hitFound = Physics.Raycast(interactionRay, out RaycastHit interactionRayHit, interactionRayLength);
         if(hitFound) {
             hitGameObject = interactionRayHit.transform.gameObject;
-            Debug.Log(hitGameObject.name);
+            // Debug.Log(hitGameObject.name);
             if(hitGameObject.layer == interactableLayer) {
                 if(originalScale.Equals(new Vector3(0f,0f,0f))) { originalScale = hitGameObject.transform.localScale; }
                 hitGameObject.transform.localScale = originalScale * scaleSize;
             }
+            return hitGameObject;
         }
         else {
             if(hitGameObject && hitGameObject.layer == interactableLayer) {
                 hitGameObject.transform.localScale = Vector3.Lerp(hitGameObject.transform.localScale, originalScale, Time.deltaTime * returnSpeed);
             }
         }
+        return null;
     }
 }
