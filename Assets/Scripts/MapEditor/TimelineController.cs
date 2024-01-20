@@ -5,6 +5,8 @@ using SynchronizerData;
 
 public class TimelineController : MonoBehaviour
 {
+    Timeline timelineInstance;
+
     private LookAt lookAt;
     private int beatValueInt;
     public int NewBeatValueInt {
@@ -24,17 +26,28 @@ public class TimelineController : MonoBehaviour
     void Start()
     {
         lookAt = Camera.main.GetComponent<LookAt>();
+        timelineInstance = GetComponent<Timeline>();
         beatValueInt = 5;
     }
 
     void Update()
     {
+        // For scrubing through GO timeline
         float scrollDirection = Input.mouseScrollDelta.y;
+
+        // For GO timeline editting, zoom and beat type
         bool altKey = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
         bool ctrlKey = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+
+        // For time stamping what positions there should be a beat -> Place/Remove
         bool leftMouseButton = Input.GetMouseButton(0);
         bool rightMouseButton = Input.GetMouseButton(1);
 
+        // Play, Pause, Resume GO timeline
+        bool spacebar = Input.GetKeyDown(KeyCode.Space);
+        bool restart = Input.GetKeyDown(KeyCode.X);
+
+        // Determines what current timestamp the song is at
         GameObject marker = lookAt.InteractRayCast();
 
         if(!altKey && !ctrlKey && scrollDirection != 0) {
@@ -75,6 +88,12 @@ public class TimelineController : MonoBehaviour
                 marker.GetComponent<Marker>().hasTimeStamp = false;
                 Destroy(noteObject);
             }
+        }
+        if(spacebar) {
+            timelineInstance.PlayMusic();
+        }
+        if(restart) {
+            timelineInstance.RestartMusic();
         }
     }
 }

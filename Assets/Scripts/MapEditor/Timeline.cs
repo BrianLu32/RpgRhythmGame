@@ -8,8 +8,8 @@ public class Timeline : MonoBehaviour
 {
     // public Timeline timelineInstance;
     private TimelineController controller;
-
     public AudioSource audioSource;
+    private bool pauseAudio;
     public float bpm;
 
     public BeatValue currentBeatValue = (BeatValue)5; // quarter note interval
@@ -100,5 +100,21 @@ public class Timeline : MonoBehaviour
             }
             sampleSpawnInterval += new Vector3(2f, 0f, 0f);
         }
+    }
+
+    public void PlayMusic() {
+        if(audioSource.timeSamples == 0) audioSource.Play();
+        if(pauseAudio) {
+            audioSource.Pause();
+            pauseAudio = false;
+        }
+        else {
+            audioSource.UnPause();
+            pauseAudio = true;
+        }
+    }
+
+    public void RestartMusic() {
+        audioSource.timeSamples = 0;
     }
 }

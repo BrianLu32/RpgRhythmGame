@@ -12,7 +12,7 @@ public class BeatSynchronizer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        double initTime = AudioSettings.dspTime;
+        // double initTime = AudioSettings.dspTime;
         // GetComponent<AudioSource>().PlayScheduled(initTime + startDelay);
         // OnAudioStart?.Invoke(initTime + startDelay);
     }
