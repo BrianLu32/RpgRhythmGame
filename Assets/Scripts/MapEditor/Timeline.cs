@@ -9,7 +9,7 @@ public class Timeline : MonoBehaviour
     // public Timeline timelineInstance;
     private TimelineController controller;
     public AudioSource audioSource;
-    private bool pauseAudio;
+    public bool pauseAudio;
     public float bpm;
 
     public BeatValue currentBeatValue = (BeatValue)5; // quarter note interval
@@ -102,15 +102,20 @@ public class Timeline : MonoBehaviour
         }
     }
 
-    public void PlayMusic() {
-        if(audioSource.timeSamples == 0) audioSource.Play();
-        if(pauseAudio) {
+    public void PlayMusic(float currentTimeStamp, bool isControllerScrolling) {
+        if(audioSource.isPlaying && !isControllerScrolling) {
             audioSource.Pause();
-            pauseAudio = false;
+        }
+        else if(audioSource.isPlaying && isControllerScrolling) {
+            audioSource.timeSamples = (int)currentTimeStamp;
+            audioSource.Pause();
+            audioSource.Play();
+        }
+        else if(!audioSource.isPlaying && isControllerScrolling) {
+            audioSource.timeSamples = (int)currentTimeStamp;
         }
         else {
-            audioSource.UnPause();
-            pauseAudio = true;
+            audioSource.Play();
         }
     }
 

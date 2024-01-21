@@ -34,6 +34,8 @@ public class TimelineController : MonoBehaviour
     {
         // For scrubing through GO timeline
         float scrollDirection = Input.mouseScrollDelta.y;
+        bool rightArrow = Input.GetKeyDown(KeyCode.RightArrow);
+        bool leftArrow = Input.GetKeyDown(KeyCode.LeftArrow);
 
         // For GO timeline editting, zoom and beat type
         bool altKey = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
@@ -45,16 +47,21 @@ public class TimelineController : MonoBehaviour
 
         // Play, Pause, Resume GO timeline
         bool spacebar = Input.GetKeyDown(KeyCode.Space);
-        bool restart = Input.GetKeyDown(KeyCode.X);
+        bool xKey = Input.GetKeyDown(KeyCode.X);
 
         // Determines what current timestamp the song is at
         GameObject marker = lookAt.InteractRayCast();
 
-        if(!altKey && !ctrlKey && scrollDirection != 0) {
+        if((!altKey && !ctrlKey && scrollDirection != 0) || rightArrow || leftArrow) {
             // Prevent moving pass the beginning and end of timeline
             if(marker.name == "Marker 0" && scrollDirection > 0) return;
             if(marker.name == "Marker " + (timelineMarkerArraySize - 1) && scrollDirection < 0) return;
             transform.position += new Vector3(2f * scrollDirection, 0f, 0f);
+            if(rightArrow) transform.position += new Vector3(-2f, 0f, 0f);
+            if(leftArrow) transform.position += new Vector3(2f, 0f, 0f);
+
+            //If audio is playing
+            timelineInstance.PlayMusic(marker.GetComponent<Marker>().timeStamp, true);
         }
         if(altKey && scrollDirection != 0) {
             transform.position += new Vector3(0f, 0f, 1f * scrollDirection);
@@ -90,9 +97,11 @@ public class TimelineController : MonoBehaviour
             }
         }
         if(spacebar) {
-            timelineInstance.PlayMusic();
+            // TODO: Will need to implment a check when scrubing timeline or
+            // when GO timeline is moving and does not land on a marker
+            timelineInstance.PlayMusic(marker.GetComponent<Marker>().timeStamp, false);
         }
-        if(restart) {
+        if(xKey) {
             timelineInstance.RestartMusic();
         }
     }
