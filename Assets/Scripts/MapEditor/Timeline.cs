@@ -6,8 +6,9 @@ using System;
 
 public class Timeline : MonoBehaviour
 {
-    // public Timeline timelineInstance;
     private TimelineController controller;
+    public ScrubTimeline scrubTimeline;
+
     public AudioSource audioSource;
     public bool pauseAudio;
     public float bpm;
@@ -22,11 +23,15 @@ public class Timeline : MonoBehaviour
 
     void Start()
     {
-        // timelineInstance = this;
         controller = GetComponent<TimelineController>();
         controller.OnBeatValueChange += BeatValueChangeHandler;
 
         CreateTimelineMarkers(bpm, (int)currentBeatValue, offset);
+        UpdateScrubTimelineMaxValue();
+    }
+
+    void Update() {
+        UpdateScrubTimelinePosition();
     }
 
     private void BeatValueChangeHandler(int newVal) 
@@ -101,7 +106,28 @@ public class Timeline : MonoBehaviour
             sampleSpawnInterval += new Vector3(2f, 0f, 0f);
         }
     }
+    /******* End of Timeline Section *******/
 
+
+
+    /******* Start of Scrub Timeline Section *******/
+    private void UpdateScrubTimelineMaxValue()
+    {
+        scrubTimeline.SetMaxValue(audioSource.clip.samples);
+    }
+
+    public void ScrubMusic(int currentTimesample) {
+        audioSource.timeSamples = currentTimesample;
+    }
+
+    private void UpdateScrubTimelinePosition() {
+        scrubTimeline.SetSliderPosition(audioSource.timeSamples);
+    }
+     /******* End of Scrub Timeline Section *******/
+
+
+
+     /******* Start of Timeline Controller Section *******/
     public void PlayMusic(float currentTimeStamp, bool isControllerScrolling) {
         if(audioSource.isPlaying && !isControllerScrolling) {
             audioSource.Pause();
@@ -122,4 +148,5 @@ public class Timeline : MonoBehaviour
     public void RestartMusic() {
         audioSource.timeSamples = 0;
     }
+     /******* Start of Timeline Controller Section *******/
 }
