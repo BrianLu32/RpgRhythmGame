@@ -6,6 +6,7 @@ using SynchronizerData;
 public class TimelineController : MonoBehaviour
 {
     Timeline timelineInstance;
+    private int sampleSetIndex = 0;
 
     private LookAt lookAt;
     private int beatValueInt;
@@ -60,6 +61,9 @@ public class TimelineController : MonoBehaviour
             if(rightArrow) transform.position += new Vector3(-2f, 0f, 0f);
             if(leftArrow) transform.position += new Vector3(2f, 0f, 0f);
 
+            // Update sample set index for timeline movement
+            sampleSetIndex = marker.GetComponent<Marker>().sampleSetIndex;
+
             //If audio is playing
             timelineInstance.PlayMusic(marker.GetComponent<Marker>().timeStamp, true);
         }
@@ -103,6 +107,17 @@ public class TimelineController : MonoBehaviour
         }
         if(xKey) {
             timelineInstance.RestartMusic();
+        }
+        
+        // Checks song position to move timeline
+        CheckForTime();
+    }
+
+    private void CheckForTime() {
+        if(timelineInstance.audioSource.timeSamples < ((int)timelineInstance.sampleSets[sampleSetIndex] + 1000) && 
+           timelineInstance.audioSource.timeSamples > ((int)timelineInstance.sampleSets[sampleSetIndex] - 1000)) {
+            sampleSetIndex++;
+            transform.position += new Vector3(-2f, 0f, 0f);
         }
     }
 }

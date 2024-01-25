@@ -12,6 +12,7 @@ public class Timeline : MonoBehaviour
     public AudioSource audioSource;
     public bool pauseAudio;
     public float bpm;
+    private float samplePeriod;
 
     public BeatValue currentBeatValue = (BeatValue)5; // quarter note interval
 
@@ -50,7 +51,7 @@ public class Timeline : MonoBehaviour
 
     private void CreateTimelineMarkers(float audioBpm, int beatValue, float offset)
     {
-        float samplePeriod = 60f / (audioBpm * BeatDecimalValues.values[beatValue]) * audioSource.clip.frequency;
+        samplePeriod = 60f / (audioBpm * BeatDecimalValues.values[beatValue]) * audioSource.clip.frequency;
 
         float sampleOffset = 0f;
         if(offset != 0f) {
@@ -72,6 +73,7 @@ public class Timeline : MonoBehaviour
             Vector3 currentMarkerScale = marker.transform.localScale;
 
             markerScript.timeStamp = sampleSets[i];
+            markerScript.sampleSetIndex = i;
             marker.name = "Marker " + i;
             switch(i % 4)
             {

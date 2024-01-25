@@ -7,7 +7,7 @@ public class Marker : MonoBehaviour
     public float timeStamp;
     public SynchronizerData.BeatValue beatValue;
     public bool hasTimeStamp;
-    public float yScaleMultiplier;
+    public int sampleSetIndex;
 
     // Start is called before the first frame update
     void Start()
