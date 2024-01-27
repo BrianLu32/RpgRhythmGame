@@ -12,7 +12,9 @@ public class Timeline : MonoBehaviour
     public AudioSource audioSource;
     public bool pauseAudio;
     public float bpm;
-    private float samplePeriod;
+    public float samplePeriod;
+    private double sampleRate;
+    public AudioSource hitSound;
 
     public BeatValue currentBeatValue = (BeatValue)5; // quarter note interval
 
@@ -24,6 +26,13 @@ public class Timeline : MonoBehaviour
 
     void Start()
     {
+        /* MAYBE TODO: Consider AudioSettings.dspTime for consistent measurement of timing regardless of when the music starts */
+        // sampleRate = AudioSettings.outputSampleRate;
+        // Debug.Log(sampleRate); //48000
+        // Debug.Log(AudioSettings.dspTime);
+        // Debug.Log("Samples Per Tick: " + sampleRate * 60f / bpm);
+        // Debug.Log("Sample: " + AudioSettings.dspTime * sampleRate);
+
         controller = GetComponent<TimelineController>();
         controller.OnBeatValueChange += BeatValueChangeHandler;
 
@@ -32,6 +41,7 @@ public class Timeline : MonoBehaviour
     }
 
     void Update() {
+        // Debug.Log(audioSource.timeSamples);
         UpdateScrubTimelinePosition();
     }
 

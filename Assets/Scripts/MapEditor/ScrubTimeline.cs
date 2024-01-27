@@ -8,6 +8,7 @@ public class ScrubTimeline : MonoBehaviour
 {
     [SerializeField] private Slider slider;
     [SerializeField] private Timeline timeline;
+    [SerializeField] private TimelineController timelineController;
     [SerializeField] private  TextMeshProUGUI audioTime;
 
     // Start is called before the first frame update
@@ -15,6 +16,7 @@ public class ScrubTimeline : MonoBehaviour
     {
         slider.onValueChanged.AddListener((currentValue) => {
             timeline.ScrubMusic((int)currentValue);
+            SetMarkerPosition(currentValue);
             SetAudioTimeText((int)currentValue);
         });
 
@@ -41,5 +43,16 @@ public class ScrubTimeline : MonoBehaviour
         float mintues = timeInSeconds / 60f;
         float seconds = timeInSeconds % 60f;
         audioTime.text = mintues.ToString("00") + ":" + seconds.ToString("00");
+    }
+
+    private void SetMarkerPosition(float currentValueInSamples) {
+        float smallestDifference = 10000f;
+        int closestIndex = 0;
+        for(int i = 0; i < timeline.sampleSets.Count; i++) {
+            if(Mathf.Abs(currentValueInSamples - timeline.sampleSets[i]) < smallestDifference) {
+                closestIndex = i;
+            }
+        }
+        timelineController.SetMarkerIndex(closestIndex);
     }
 }
