@@ -7,27 +7,24 @@ using System;
 public class Timeline : MonoBehaviour
 {
     private TimelineController controller;
-    public ScrubTimeline scrubTimeline;
+    [SerializeField] private ScrubTimeline scrubTimeline;
+    [SerializeField] private AudioManager audioManager;
 
-    public AudioSource audioSource;
-    public bool pauseAudio;
-    public float bpm;
     public float samplePeriod;
-    private double sampleRate;
-    public AudioSource hitSound;
+    private float sampleRate;
+    public float samplesPerTick;
 
     public BeatValue currentBeatValue = (BeatValue)5; // quarter note interval
 
-    public float offset = 0f;
     public List<float> sampleSets = new();
 
-    public GameObject sampleMarker;
+    [SerializeField] private GameObject sampleMarker;
     private Vector3 sampleSpawnInterval = new(0f, 0f, 5f);
 
     void Start()
     {
         /* MAYBE TODO: Consider AudioSettings.dspTime for consistent measurement of timing regardless of when the music starts */
-        // sampleRate = AudioSettings.outputSampleRate;
+        sampleRate = AudioSettings.outputSampleRate;
         // Debug.Log(sampleRate); //48000
         // Debug.Log(AudioSettings.dspTime);
         // Debug.Log("Samples Per Tick: " + sampleRate * 60f / bpm);
@@ -36,12 +33,11 @@ public class Timeline : MonoBehaviour
         controller = GetComponent<TimelineController>();
         controller.OnBeatValueChange += BeatValueChangeHandler;
 
-        CreateTimelineMarkers(bpm, (int)currentBeatValue, offset);
+        CreateTimelineMarkers(audioManager.bpm, (int)currentBeatValue, audioManager.offset);
         UpdateScrubTimelineMaxValue();
     }
 
     void Update() {
-        // Debug.Log(audioSource.timeSamples);
         UpdateScrubTimelinePosition();
     }
 
@@ -61,51 +57,53 @@ public class Timeline : MonoBehaviour
 
     private void CreateTimelineMarkers(float audioBpm, int beatValue, float offset)
     {
-        samplePeriod = 60f / (audioBpm * BeatDecimalValues.values[beatValue]) * audioSource.clip.frequency;
+        AudioClip song = audioManager.song.clip;
 
+        // Same as samplePeriod?
+        samplesPerTick = sampleRate * 60f / (audioBpm * BeatDecimalValues.values[beatValue]);
+        // samplePeriod = 60f / (audioBpm * BeatDecimalValues.values[beatValue]) * audioSource.clip.frequency;
+
+        // float sampleOffset = 0f;
         float sampleOffset = 0f;
         if(offset != 0f) {
-            sampleOffset = 60f / (audioBpm * offset) * audioSource.clip.frequency;
+            sampleOffset = 60f / (audioBpm * offset) * song.frequency;
             if(offset < 0f) {
-                sampleOffset = samplePeriod - sampleOffset;
+                // sampleOffset = samplePeriod - sampleOffset;
+                sampleOffset = samplesPerTick - sampleOffset;
             }
         }
 
-        float currentSample = samplePeriod;
-        controller.timelineMarkerArraySize = audioSource.clip.length;
-        for(int i = 0; i < audioSource.clip.length; i++) {
+        // float currentSample = samplePeriod;
+        float currentSample = 0;
+        controller.timelineMarkerArraySize = song.samples / samplesPerTick;
+        for(int i = 0; i < song.samples / samplesPerTick; i++) {
             sampleSets.Add(currentSample + sampleOffset);
-            currentSample += samplePeriod;
 
             GameObject marker = Instantiate(sampleMarker, sampleSpawnInterval, Quaternion.identity, transform);
             Marker markerScript = marker.GetComponent<Marker>();
             SpriteRenderer markerSpriteRenderer = marker.GetComponent<SpriteRenderer>();
             Vector3 currentMarkerScale = marker.transform.localScale;
 
-            markerScript.timeStamp = sampleSets[i];
+            markerScript.timeStamp = currentSample;
             markerScript.sampleSetIndex = i;
             marker.name = "Marker " + i;
             switch(i % 4)
             {
                 case 0:
                     markerScript.beatValue = BeatValue.WholeBeat;
-                    // markerScript.yScaleMultiplier = 1.0f;
                     markerSpriteRenderer.color = Color.white;
                     break;
                 case 1:
                     markerScript.beatValue = BeatValue.QuarterBeat;
-                    // markerScript.yScaleMultiplier = 1.0f;
                     markerSpriteRenderer.color = Color.cyan;
                     break;
                 case 2:
                     marker.transform.localScale = new Vector3(currentMarkerScale.x, currentMarkerScale.y * 1.5f, currentMarkerScale.z);
-                    // markerScript.yScaleMultiplier = 1.5f;
                     markerScript.beatValue = BeatValue.HalfBeat;
                     markerSpriteRenderer.color = Color.red;
                     break;
                 case 3:
                     markerScript.beatValue = BeatValue.QuarterBeat;
-                    // markerScript.yScaleMultiplier = 1.0f;
                     markerSpriteRenderer.color = Color.cyan;
                     break;
                 default:
@@ -113,9 +111,9 @@ public class Timeline : MonoBehaviour
             }
             if(i % 16 == 0) {
                 marker.transform.localScale = new Vector3(currentMarkerScale.x, currentMarkerScale.y * 2, currentMarkerScale.z);
-                // markerScript.yScaleMultiplier = 2.0f;
             }
             sampleSpawnInterval += new Vector3(2f, 0f, 0f);
+            currentSample += samplesPerTick;
         }
     }
     /******* End of Timeline Section *******/
@@ -125,40 +123,15 @@ public class Timeline : MonoBehaviour
     /******* Start of Scrub Timeline Section *******/
     private void UpdateScrubTimelineMaxValue()
     {
-        scrubTimeline.SetMaxValue(audioSource.clip.samples);
+        scrubTimeline.SetMaxValue(audioManager.song.clip.samples);
     }
 
     public void ScrubMusic(int currentTimesample) {
-        audioSource.timeSamples = currentTimesample;
+        audioManager.song.timeSamples = currentTimesample;
     }
 
     private void UpdateScrubTimelinePosition() {
-        scrubTimeline.SetSliderPosition(audioSource.timeSamples);
+        scrubTimeline.SetSliderPosition(audioManager.song.timeSamples);
     }
      /******* End of Scrub Timeline Section *******/
-
-
-
-     /******* Start of Timeline Controller Section *******/
-    public void PlayMusic(float currentTimeStamp, bool isControllerScrolling) {
-        if(audioSource.isPlaying && !isControllerScrolling) {
-            audioSource.Pause();
-        }
-        else if(audioSource.isPlaying && isControllerScrolling) {
-            audioSource.timeSamples = (int)currentTimeStamp;
-            audioSource.Pause();
-            audioSource.Play();
-        }
-        else if(!audioSource.isPlaying && isControllerScrolling) {
-            audioSource.timeSamples = (int)currentTimeStamp;
-        }
-        else {
-            audioSource.Play();
-        }
-    }
-
-    public void RestartMusic() {
-        audioSource.timeSamples = 0;
-    }
-     /******* Start of Timeline Controller Section *******/
 }

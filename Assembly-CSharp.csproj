@@ -80,6 +80,7 @@
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\MapEditor\Timeline.cs" />
     <Compile Include="Assets\Scripts\MapEditor\Marker.cs" />
+    <Compile Include="Assets\Scripts\MapEditor\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Music\BeatSync\BeatSynchronizer.cs" />
     <Compile Include="Assets\Scripts\Player\LookAt.cs" />
     <Compile Include="Assets\Scripts\Music\MusicController.cs" />

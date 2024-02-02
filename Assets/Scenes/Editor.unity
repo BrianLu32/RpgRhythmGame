@@ -156,11 +156,12 @@ RectTransform:
   - {fileID: 764125890}
   - {fileID: 1224800680}
   - {fileID: 695255888}
+  - {fileID: 1556625141}
   m_Father: {fileID: 1674608959}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -310}
+  m_AnchoredPosition: {x: 0, y: -125}
   m_SizeDelta: {x: 900, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &47081094
@@ -226,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eba68d2760680fb4f844bc7149f67097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManager: {fileID: 188111798}
   slider: {fileID: 47081094}
   timeline: {fileID: 225033101}
   timelineController: {fileID: 225033103}
@@ -240,7 +242,7 @@ GameObject:
   m_Component:
   - component: {fileID: 188111797}
   - component: {fileID: 188111795}
-  - component: {fileID: 188111796}
+  - component: {fileID: 188111798}
   m_Layer: 0
   m_Name: Scene Audio
   m_TagString: Untagged
@@ -344,20 +346,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &188111796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 188111794}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f8e784dcc00bda46b91def209e5d887, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bpm: 190
-  startDelay: 1
 --- !u!4 &188111797
 Transform:
   m_ObjectHideFlags: 0
@@ -373,6 +361,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &188111798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188111794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8042ae66873d43d47bddcb9604d39784, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  song: {fileID: 188111795}
+  bpm: 190
+  offset: 0
+  hitSound: {fileID: 8300000, guid: db87ce1495df64a4e8e736eef8933b2d, type: 3}
 --- !u!1 &217355992
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +494,6 @@ GameObject:
   - component: {fileID: 225033102}
   - component: {fileID: 225033101}
   - component: {fileID: 225033103}
-  - component: {fileID: 225033104}
   m_Layer: 0
   m_Name: Timeline
   m_TagString: Untagged
@@ -511,13 +514,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrubTimeline: {fileID: 47081095}
-  audioSource: {fileID: 188111795}
-  pauseAudio: 0
-  bpm: 190
+  audioManager: {fileID: 188111798}
   samplePeriod: 0
-  hitSound: {fileID: 225033104}
+  samplesPerTick: 0
   currentBeatValue: 5
-  offset: 0
   sampleSets: []
   sampleMarker: {fileID: 5277434237057494256, guid: 5dfe22761ab3da24194cce2234ed1265, type: 3}
 --- !u!4 &225033102
@@ -547,104 +547,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09a3c00aeeeb9cd48bbd88ed61764f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManager: {fileID: 188111798}
   sampleMarkerNote: {fileID: 7466369415410359708, guid: 135f2d1f580074b45a0023b11f87c13e, type: 3}
   timelineMarkerArraySize: 0
---- !u!82 &225033104
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 225033100}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: db87ce1495df64a4e8e736eef8933b2d, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0.2
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &489966249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1270,16 +1175,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1556625140}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -467.1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.000030517578}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1674608959}
+  m_Father: {fileID: 47081093}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -515, y: -310}
+  m_AnchoredPosition: {x: -515, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1556625142
@@ -1475,7 +1380,6 @@ RectTransform:
   m_Children:
   - {fileID: 693746583}
   - {fileID: 47081093}
-  - {fileID: 1556625141}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

@@ -6,8 +6,9 @@ using System;
 
 public class TimelineController : MonoBehaviour
 {
-    Timeline timelineInstance;
-    private int sampleSetIndex = 0;
+    private Timeline timelineInstance;
+    [SerializeField] private AudioManager audioManager;
+    private int currentSampleSetIndex = 0;
 
     private int lastInterval;
 
@@ -29,7 +30,7 @@ public class TimelineController : MonoBehaviour
 
     void Start()
     {
-            lookAt = Camera.main.GetComponent<LookAt>();
+        lookAt = Camera.main.GetComponent<LookAt>();
         timelineInstance = GetComponent<Timeline>();
         beatValueInt = 5;
     }
@@ -58,17 +59,21 @@ public class TimelineController : MonoBehaviour
 
         if((!altKey && !ctrlKey && scrollDirection != 0) || rightArrow || leftArrow) {
             // Prevent moving pass the beginning and end of timeline
-            if(marker.name == "Marker 0" && scrollDirection > 0) return;
-            if(marker.name == "Marker " + (timelineMarkerArraySize - 1) && scrollDirection < 0) return;
+            // if(marker.GetComponent<Marker>().sampleSetIndex == 0 && scrollDirection > 0) return;
+            // if(marker.name == "Marker " + (timelineMarkerArraySize - 1) && scrollDirection < 0) return;
+            if(currentSampleSetIndex - 1 < 0 && scrollDirection > 0) { return; }
+            if(currentSampleSetIndex > timelineMarkerArraySize && scrollDirection < 0) { return; }
+
+            if(scrollDirection > 0) { currentSampleSetIndex--; }
+            if(scrollDirection < 0) { currentSampleSetIndex++; }
+
             transform.position += new Vector3(2f * scrollDirection, 0f, 0f);
+
             if(rightArrow) transform.position += new Vector3(-2f, 0f, 0f);
             if(leftArrow) transform.position += new Vector3(2f, 0f, 0f);
 
-            // Update sample set index for timeline movement
-            // sampleSetIndex = marker.GetComponent<Marker>().sampleSetIndex;
-
             //If audio is playing
-            timelineInstance.PlayMusic(marker.GetComponent<Marker>().timeStamp, true);
+            audioManager.PlayMusic(timelineInstance.sampleSets[currentSampleSetIndex], true);
         }
         if(altKey && scrollDirection != 0) {
             transform.position += new Vector3(0f, 0f, 1f * scrollDirection);
@@ -91,8 +96,8 @@ public class TimelineController : MonoBehaviour
                 noteObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
                 marker.GetComponent<Marker>().hasTimeStamp = true;
+                audioManager.AddHitSoundSource(marker.GetComponent<Marker>().sampleSetIndex);
             }
-            // Destroy(noteObject);
         }
         if(rightMouseButton && marker) {
 
@@ -100,47 +105,60 @@ public class TimelineController : MonoBehaviour
                 GameObject noteObject = marker.transform.GetChild(0).gameObject;
                 marker.GetComponent<Marker>().hasTimeStamp = false;
                 Destroy(noteObject);
+                audioManager.DestroyHitSoundSource(marker.GetComponent<Marker>().sampleSetIndex);
             }
         }
         if(spacebar) {
-            // TODO: Will need to implment a check when scrubing timeline or
-            // when GO timeline is moving and does not land on a marker
-            timelineInstance.PlayMusic(marker.GetComponent<Marker>().timeStamp, false);
+            // if(audioManager.song.isPlaying) Debug.Log("Pause: " + currentSampleSetIndex);
+            // else Debug.Log("Play: " + currentSampleSetIndex);
+            // Debug.Log("Stamp: " + timelineInstance.sampleSets[currentSampleSetIndex]);
+            audioManager.PlayMusic(timelineInstance.sampleSets[currentSampleSetIndex], false);
         }
         if(xKey) {
-            timelineInstance.RestartMusic();
+            audioManager.RestartMusic();
         }
 
         // Plays a sound when there is a time stamp
-        if(marker.GetComponent<Marker>().hasTimeStamp) {
-            PlayHitSound();
+        // Needs to look ahead by one marker to schedule the sound to play on time
+        GameObject nextMarker = GameObject.Find("Marker " + (currentSampleSetIndex + 1));
+        if(nextMarker.GetComponent<Marker>().hasTimeStamp) {
+            PlayHitSound(nextMarker.GetComponent<Marker>().sampleSetIndex);
         }
         
         // Checks song position to move timeline
-        // if(timelineInstance.audioSource.isPlaying) CheckForTime();
-        if(timelineInstance.audioSource.isPlaying) CheckForTime(marker.GetComponent<Marker>().sampleSetIndex);
+        if(audioManager.song.isPlaying) CheckForTime();
     }
 
-    private void CheckForTime(int index) {
-        // if(timelineInstance.audioSource.timeSamples < ((int)timelineInstance.sampleSets[sampleSetIndex] + 1000) && 
-        //    timelineInstance.audioSource.timeSamples > ((int)timelineInstance.sampleSets[sampleSetIndex] - 1000)) {
-        //     sampleSetIndex++;
-        //     transform.position += new Vector3(-2f, 0f, 0f);
-        // }
-        float sampledTime = (timelineInstance.audioSource.timeSamples + timelineInstance.offset) / (timelineInstance.samplePeriod);
+    public void CheckForTime() {
+        float sampledTime = (audioManager.song.timeSamples + audioManager.offset) / (timelineInstance.samplesPerTick);
         if(Mathf.FloorToInt(sampledTime) != lastInterval) {
             lastInterval = Mathf.FloorToInt(sampledTime);
             transform.position += new Vector3(-2f, 0f, 0f);
+            currentSampleSetIndex++;
+            Debug.Log("Iterate: " + currentSampleSetIndex);
         }
     }
 
-    private void PlayHitSound() {
-        if(timelineInstance.audioSource.isPlaying) timelineInstance.hitSound.Play();
+    private void PlayHitSound(int hitSourceIndex) {
+        if(audioManager.song.isPlaying) audioManager.PlayHitSoundSource(hitSourceIndex);
     }
 
     /******* Start of Scrub Timeline Section *******/
     public void SetMarkerIndex(int index) {
-        sampleSetIndex = index;
+        UpdateTimeLinePosition(index);
+        currentSampleSetIndex = index;
+    }
+    private void UpdateTimeLinePosition(int newIndex) {
+        // If this is negative, it will be traversing backwards, otherwise forwards
+        int indexDifference = newIndex - currentSampleSetIndex;
+        for(int i = 0; i < Math.Abs(indexDifference); i++) {
+            if(indexDifference < 0) {
+                transform.position += new Vector3(2f, 0f, 0f);
+            }
+            else {
+                transform.position += new Vector3(-2f, 0f, 0f);
+            }
+        }
     }
     /******* End of Scrub Timeline Section *******/
 }

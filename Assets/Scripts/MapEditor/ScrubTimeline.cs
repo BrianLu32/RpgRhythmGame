@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ScrubTimeline : MonoBehaviour
 {
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private Slider slider;
     [SerializeField] private Timeline timeline;
     [SerializeField] private TimelineController timelineController;
@@ -34,13 +35,14 @@ public class ScrubTimeline : MonoBehaviour
     }
 
     public void SetSliderPosition(int currentValueInSamples) {
-        slider.value = currentValueInSamples;
+        slider.SetValueWithoutNotify(currentValueInSamples);
         SetAudioTimeText(currentValueInSamples);
     }
 
     private void SetAudioTimeText(int currentValueInSamples) {
-        float timeInSeconds = currentValueInSamples / timeline.audioSource.clip.frequency;
-        float mintues = timeInSeconds / 60f;
+        float timeInSeconds = currentValueInSamples / audioManager.song.clip.frequency;
+        // Debug.Log(timeInSeconds / 60f);
+        int mintues = (int)timeInSeconds / 60;
         float seconds = timeInSeconds % 60f;
         audioTime.text = mintues.ToString("00") + ":" + seconds.ToString("00");
     }
@@ -54,5 +56,6 @@ public class ScrubTimeline : MonoBehaviour
             }
         }
         timelineController.SetMarkerIndex(closestIndex);
+        // timelineController.CheckForTime();
     }
 }
