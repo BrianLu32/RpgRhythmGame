@@ -7,6 +7,7 @@ using System;
 public class TimelineController : MonoBehaviour
 {
     private Timeline timelineInstance;
+    private TimelineCollider timelineCollider;
     [SerializeField] private AudioManager audioManager;
     private int currentSampleSetIndex = 0;
 
@@ -32,6 +33,7 @@ public class TimelineController : MonoBehaviour
     {
         lookAt = Camera.main.GetComponent<LookAt>();
         timelineInstance = GetComponent<Timeline>();
+        timelineCollider = GetComponent<TimelineCollider>();
         beatValueInt = 5;
     }
 
@@ -55,7 +57,8 @@ public class TimelineController : MonoBehaviour
         bool xKey = Input.GetKeyDown(KeyCode.X);
 
         // Determines what current timestamp the song is at
-        GameObject marker = lookAt.InteractRayCast();
+        GameObject marker = lookAt.InteractRayCastMarker();
+        Debug.Log(marker);
 
         if((!altKey && !ctrlKey && scrollDirection != 0) || rightArrow || leftArrow) {
             // Prevent moving pass the beginning and end of timeline
@@ -87,7 +90,7 @@ public class TimelineController : MonoBehaviour
                 NewBeatValueInt = (int)(NewBeatValueInt + -scrollDirection + 1) > 9 ? 9 : (int)(NewBeatValueInt + -scrollDirection + 1);
             }
         }
-        if(leftMouseButton && marker) {
+        if(timelineCollider.isMouseOver && leftMouseButton && marker) {
             if(!marker.GetComponent<Marker>().hasTimeStamp) {
                 Vector3 spawnPos = new(marker.transform.position.x, marker.transform.position.y + 4.0f, marker.transform.position.z);
                 GameObject noteObject = Instantiate(sampleMarkerNote, spawnPos, Quaternion.identity, marker.transform);
@@ -99,7 +102,7 @@ public class TimelineController : MonoBehaviour
                 audioManager.AddHitSoundSource(marker.GetComponent<Marker>().sampleSetIndex);
             }
         }
-        if(rightMouseButton && marker) {
+        if(timelineCollider.isMouseOver && rightMouseButton && marker) {
 
             if(marker.GetComponent<Marker>().hasTimeStamp) {
                 GameObject noteObject = marker.transform.GetChild(0).gameObject;

@@ -494,6 +494,8 @@ GameObject:
   - component: {fileID: 225033102}
   - component: {fileID: 225033101}
   - component: {fileID: 225033103}
+  - component: {fileID: 225033104}
+  - component: {fileID: 225033105}
   m_Layer: 0
   m_Name: Timeline
   m_TagString: Untagged
@@ -530,7 +532,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 5}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 10, y: 10, z: 0.25315}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -550,6 +552,40 @@ MonoBehaviour:
   audioManager: {fileID: 188111798}
   sampleMarkerNote: {fileID: 7466369415410359708, guid: 135f2d1f580074b45a0023b11f87c13e, type: 3}
   timelineMarkerArraySize: 0
+--- !u!65 &225033104
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225033100}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &225033105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225033100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c7c2356399c3b4681de950009b057f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isMouseOver: 0
 --- !u!1 &489966249
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 162637636596637381}
   - component: {fileID: 6252117488180820295}
   - component: {fileID: 7711459878481936963}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SampleMark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeStamp: 0
   beatValue: 0
-  position: {fileID: 0}
+  hasTimeStamp: 0
+  sampleSetIndex: 0
 --- !u!65 &7711459878481936963
 BoxCollider:
   m_ObjectHideFlags: 0

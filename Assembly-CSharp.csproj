@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\Player\ThirdPersonMovement.cs" />
     <Compile Include="Assets\Scripts\MapEditor\TimelineController.cs" />
     <Compile Include="Assets\Scripts\Music\Note.cs" />
+    <Compile Include="Assets\Scripts\MapEditor\TimelineCollider.cs" />
     <Compile Include="Assets\Scripts\ToPlayerEffects\BillboardEffect.cs" />
     <Compile Include="Assets\Scripts\Music\ScoreManager.cs" />
     <Compile Include="Assets\Scripts\Configs\Configs.cs" />
