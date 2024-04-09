@@ -27,23 +27,26 @@ public class AudioManager : MonoBehaviour
         Destroy(hitSoundSource);
     }
 
-    public void PlayHitSoundSource(int hitSoundNumber) {
-        GameObject hitSoundSource = GameObject.Find(hitSoundBaseName + hitSoundNumber);
-        hitSoundSource.GetComponent<AudioSource>().Play();
+    public void PlayHitSoundSource(GameObject marker) {
+        GameObject hitSoundSource = GameObject.Find(hitSoundBaseName + marker.GetComponent<Marker>().sampleSetIndex);
+        float sampleSetPosInSec = (marker.GetComponent<Marker>().timeStamp - offset) / 1000f;
+        hitSoundSource.GetComponent<AudioSource>().PlayScheduled(sampleSetPosInSec);
     }
 
     /******* Start of Timeline Controller Section *******/
-    public void PlayMusic(float currentTimeStamp, bool isControllerScrolling) {
+    public void PlayMusic(float currentSampleSetPos, bool isControllerScrolling) {
         if(song.isPlaying && !isControllerScrolling) {
             song.Pause();
         }
         else if(song.isPlaying && isControllerScrolling) {
-            song.timeSamples = (int)currentTimeStamp;
+            float songPosInSec = (currentSampleSetPos / 1000) - offset;
+            song.time = songPosInSec;
             song.Pause();
             song.Play();
         }
         else if(!song.isPlaying && isControllerScrolling) {
-            song.timeSamples = (int)currentTimeStamp;
+            float songPosInSec = (currentSampleSetPos - offset) / 1000;
+            song.time = songPosInSec;
         }
         else {
             song.Play();

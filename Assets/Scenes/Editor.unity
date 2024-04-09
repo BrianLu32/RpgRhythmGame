@@ -375,7 +375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   song: {fileID: 188111795}
   bpm: 190
-  offset: 0
+  offset: 20225
   hitSound: {fileID: 8300000, guid: db87ce1495df64a4e8e736eef8933b2d, type: 3}
 --- !u!1 &217355992
 GameObject:
@@ -494,8 +494,6 @@ GameObject:
   - component: {fileID: 225033102}
   - component: {fileID: 225033101}
   - component: {fileID: 225033103}
-  - component: {fileID: 225033104}
-  - component: {fileID: 225033105}
   m_Layer: 0
   m_Name: Timeline
   m_TagString: Untagged
@@ -531,11 +529,11 @@ Transform:
   m_GameObject: {fileID: 225033100}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 0.25315}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 273160124}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &225033103
 MonoBehaviour:
@@ -549,43 +547,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09a3c00aeeeb9cd48bbd88ed61764f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timelineColliderObject: {fileID: 1669877655}
   audioManager: {fileID: 188111798}
   sampleMarkerNote: {fileID: 7466369415410359708, guid: 135f2d1f580074b45a0023b11f87c13e, type: 3}
   timelineMarkerArraySize: 0
---- !u!65 &225033104
-BoxCollider:
+--- !u!1 &273160123
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 225033100}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &225033105
-MonoBehaviour:
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 273160124}
+  m_Layer: 0
+  m_Name: TimelineParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &273160124
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 225033100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5c7c2356399c3b4681de950009b057f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMouseOver: 0
+  m_GameObject: {fileID: 273160123}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 225033102}
+  - {fileID: 1669877656}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &489966249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,6 +1318,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1556625140}
   m_CullTransparentMesh: 1
+--- !u!1 &1669877655
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1669877656}
+  - component: {fileID: 1669877657}
+  - component: {fileID: 1669877658}
+  m_Layer: 0
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1669877656
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669877655}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 10, y: 10, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 273160124}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1669877657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669877655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c7c2356399c3b4681de950009b057f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isMouseOver: 0
+--- !u!65 &1669877658
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669877655}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1674608955
 GameObject:
   m_ObjectHideFlags: 0
@@ -1768,7 +1833,7 @@ SceneRoots:
   - {fileID: 1788339076}
   - {fileID: 1720786525}
   - {fileID: 188111797}
-  - {fileID: 225033102}
+  - {fileID: 273160124}
   - {fileID: 1699140780}
   - {fileID: 2048167296}
   - {fileID: 489966252}

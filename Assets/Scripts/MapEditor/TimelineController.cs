@@ -8,6 +8,7 @@ public class TimelineController : MonoBehaviour
 {
     private Timeline timelineInstance;
     private TimelineCollider timelineCollider;
+    public GameObject timelineColliderObject;
     [SerializeField] private AudioManager audioManager;
     private int currentSampleSetIndex = 0;
 
@@ -24,7 +25,6 @@ public class TimelineController : MonoBehaviour
         }
     }
     public GameObject sampleMarkerNote;
-    public float timelineMarkerArraySize;
 
     public delegate void OnBeatValueChangeDelegate(int newVal);
     public event OnBeatValueChangeDelegate OnBeatValueChange;
@@ -33,7 +33,7 @@ public class TimelineController : MonoBehaviour
     {
         lookAt = Camera.main.GetComponent<LookAt>();
         timelineInstance = GetComponent<Timeline>();
-        timelineCollider = GetComponent<TimelineCollider>();
+        timelineCollider = timelineColliderObject.GetComponent<TimelineCollider>();
         beatValueInt = 5;
     }
 
@@ -58,14 +58,12 @@ public class TimelineController : MonoBehaviour
 
         // Determines what current timestamp the song is at
         GameObject marker = lookAt.InteractRayCastMarker();
-        Debug.Log(marker);
 
         if((!altKey && !ctrlKey && scrollDirection != 0) || rightArrow || leftArrow) {
             // Prevent moving pass the beginning and end of timeline
-            // if(marker.GetComponent<Marker>().sampleSetIndex == 0 && scrollDirection > 0) return;
-            // if(marker.name == "Marker " + (timelineMarkerArraySize - 1) && scrollDirection < 0) return;
+            // Scrolling Down = -1, Scrolling Up = 1
             if(currentSampleSetIndex - 1 < 0 && scrollDirection > 0) { return; }
-            if(currentSampleSetIndex > timelineMarkerArraySize && scrollDirection < 0) { return; }
+            if(currentSampleSetIndex > timelineInstance.sampleSets.Count && scrollDirection < 0) { return; }
 
             if(scrollDirection > 0) { currentSampleSetIndex--; }
             if(scrollDirection < 0) { currentSampleSetIndex++; }
@@ -112,9 +110,6 @@ public class TimelineController : MonoBehaviour
             }
         }
         if(spacebar) {
-            // if(audioManager.song.isPlaying) Debug.Log("Pause: " + currentSampleSetIndex);
-            // else Debug.Log("Play: " + currentSampleSetIndex);
-            // Debug.Log("Stamp: " + timelineInstance.sampleSets[currentSampleSetIndex]);
             audioManager.PlayMusic(timelineInstance.sampleSets[currentSampleSetIndex], false);
         }
         if(xKey) {
@@ -125,7 +120,7 @@ public class TimelineController : MonoBehaviour
         // Needs to look ahead by one marker to schedule the sound to play on time
         GameObject nextMarker = GameObject.Find("Marker " + (currentSampleSetIndex + 1));
         if(nextMarker.GetComponent<Marker>().hasTimeStamp) {
-            PlayHitSound(nextMarker.GetComponent<Marker>().sampleSetIndex);
+            PlayHitSound(nextMarker);
         }
         
         // Checks song position to move timeline
@@ -133,17 +128,15 @@ public class TimelineController : MonoBehaviour
     }
 
     public void CheckForTime() {
-        float sampledTime = (audioManager.song.timeSamples + audioManager.offset) / (timelineInstance.samplesPerTick);
-        if(Mathf.FloorToInt(sampledTime) != lastInterval) {
-            lastInterval = Mathf.FloorToInt(sampledTime);
+        float songPosition = (float)(audioManager.song.time + (audioManager.offset / 1000)) * 1000;
+        if(songPosition >= timelineInstance.sampleSets[currentSampleSetIndex]) {
             transform.position += new Vector3(-2f, 0f, 0f);
             currentSampleSetIndex++;
-            Debug.Log("Iterate: " + currentSampleSetIndex);
         }
     }
 
-    private void PlayHitSound(int hitSourceIndex) {
-        if(audioManager.song.isPlaying) audioManager.PlayHitSoundSource(hitSourceIndex);
+    private void PlayHitSound(GameObject marker) {
+        if(audioManager.song.isPlaying) audioManager.PlayHitSoundSource(marker);
     }
 
     /******* Start of Scrub Timeline Section *******/

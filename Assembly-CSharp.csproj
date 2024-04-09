@@ -59,7 +59,7 @@
     <UnityVersion>2022.3.15f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Users\Brian\.vscode\extensions\visualstudiotoolsforunity.vstuc-0.9.4\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Users\Brian\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.0.1\Analyzers\Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.15f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.15f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Music\BeatSync\SynchronizerData.cs" />
     <Compile Include="Assets\Scripts\Music\BeatSync\BeatObserver.cs" />
     <Compile Include="Assets\Scripts\Music\DdrManager.cs" />
+    <Compile Include="Assets\Scripts\MapEditor\ExportBeatmap.cs" />
     <Compile Include="Assets\Scripts\Player\ThirdPersonMovement.cs" />
     <Compile Include="Assets\Scripts\MapEditor\TimelineController.cs" />
     <Compile Include="Assets\Scripts\Music\Note.cs" />

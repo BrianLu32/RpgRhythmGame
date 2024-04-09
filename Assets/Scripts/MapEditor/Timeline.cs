@@ -10,6 +10,7 @@ public class Timeline : MonoBehaviour
     [SerializeField] private ScrubTimeline scrubTimeline;
     [SerializeField] private AudioManager audioManager;
 
+    private float secPerBeat;
     public float samplePeriod;
     private float sampleRate;
     public float samplesPerTick;
@@ -29,6 +30,8 @@ public class Timeline : MonoBehaviour
         // Debug.Log(AudioSettings.dspTime);
         // Debug.Log("Samples Per Tick: " + sampleRate * 60f / bpm);
         // Debug.Log("Sample: " + AudioSettings.dspTime * sampleRate);
+
+        secPerBeat = 60f / audioManager.bpm;
 
         controller = GetComponent<TimelineController>();
         controller.OnBeatValueChange += BeatValueChangeHandler;
@@ -59,35 +62,20 @@ public class Timeline : MonoBehaviour
     {
         AudioClip song = audioManager.song.clip;
 
-        // Same as samplePeriod?
-        samplesPerTick = sampleRate * 60f / (audioBpm * BeatDecimalValues.values[beatValue]);
-        // samplePeriod = 60f / (audioBpm * BeatDecimalValues.values[beatValue]) * audioSource.clip.frequency;
-
-        // float sampleOffset = 0f;
-        float sampleOffset = 0f;
-        if(offset != 0f) {
-            sampleOffset = 60f / (audioBpm * offset) * song.frequency;
-            if(offset < 0f) {
-                // sampleOffset = samplePeriod - sampleOffset;
-                sampleOffset = samplesPerTick - sampleOffset;
-            }
-        }
-
-        // float currentSample = samplePeriod;
-        float currentSample = 0;
-        controller.timelineMarkerArraySize = song.samples / samplesPerTick;
-        for(int i = 0; i < song.samples / samplesPerTick; i++) {
-            sampleSets.Add(currentSample + sampleOffset);
+        // Need to remove indexing in the future
+        int index = 0;
+        for(float i = 0; i < song.length; i += secPerBeat) {
+            sampleSets.Add((i * 1000) + offset);
 
             GameObject marker = Instantiate(sampleMarker, sampleSpawnInterval, Quaternion.identity, transform);
             Marker markerScript = marker.GetComponent<Marker>();
             SpriteRenderer markerSpriteRenderer = marker.GetComponent<SpriteRenderer>();
             Vector3 currentMarkerScale = marker.transform.localScale;
 
-            markerScript.timeStamp = currentSample;
-            markerScript.sampleSetIndex = i;
-            marker.name = "Marker " + i;
-            switch(i % 4)
+            markerScript.timeStamp = (i * 1000) + offset;
+            markerScript.sampleSetIndex = index;
+            marker.name = "Marker " + index;
+            switch(index % 4)
             {
                 case 0:
                     markerScript.beatValue = BeatValue.WholeBeat;
@@ -109,11 +97,11 @@ public class Timeline : MonoBehaviour
                 default:
                     break;
             }
-            if(i % 16 == 0) {
+            if(index % 16 == 0) {
                 marker.transform.localScale = new Vector3(currentMarkerScale.x, currentMarkerScale.y * 2, currentMarkerScale.z);
             }
             sampleSpawnInterval += new Vector3(2f, 0f, 0f);
-            currentSample += samplesPerTick;
+            index++;
         }
     }
     /******* End of Timeline Section *******/
