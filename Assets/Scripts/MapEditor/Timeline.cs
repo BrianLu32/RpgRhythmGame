@@ -7,41 +7,28 @@ using System;
 public class Timeline : MonoBehaviour
 {
     private TimelineController controller;
-    [SerializeField] private ScrubTimeline scrubTimeline;
     [SerializeField] private AudioManager audioManager;
 
     private float secPerBeat;
-    public float samplePeriod;
-    private float sampleRate;
-    public float samplesPerTick;
-
-    public BeatValue currentBeatValue = (BeatValue)5; // quarter note interval
-
+    public BeatValue currentBeatValue = (BeatValue)1; // quarter note interval
     public List<float> sampleSets = new();
+    public List<GameObject> markerSets = new();
 
     [SerializeField] private GameObject sampleMarker;
     private Vector3 sampleSpawnInterval = new(0f, 0f, 5f);
 
     void Start()
     {
-        /* MAYBE TODO: Consider AudioSettings.dspTime for consistent measurement of timing regardless of when the music starts */
-        sampleRate = AudioSettings.outputSampleRate;
-        // Debug.Log(sampleRate); //48000
-        // Debug.Log(AudioSettings.dspTime);
-        // Debug.Log("Samples Per Tick: " + sampleRate * 60f / bpm);
-        // Debug.Log("Sample: " + AudioSettings.dspTime * sampleRate);
-
         secPerBeat = 60f / audioManager.bpm;
 
         controller = GetComponent<TimelineController>();
         controller.OnBeatValueChange += BeatValueChangeHandler;
 
-        CreateTimelineMarkers(audioManager.bpm, (int)currentBeatValue, audioManager.offset);
-        UpdateScrubTimelineMaxValue();
+        CreateTimelineMarkers((int)currentBeatValue, audioManager.offset);
     }
 
     void Update() {
-        UpdateScrubTimelinePosition();
+        
     }
 
     private void BeatValueChangeHandler(int newVal) 
@@ -58,14 +45,15 @@ public class Timeline : MonoBehaviour
         }
     }
 
-    private void CreateTimelineMarkers(float audioBpm, int beatValue, float offset)
+    private void CreateTimelineMarkers(int beatValue, float offset)
     {
         AudioClip song = audioManager.song.clip;
 
         // Need to remove indexing in the future
         int index = 0;
-        for(float i = 0; i < song.length; i += secPerBeat) {
-            sampleSets.Add((i * 1000) + offset);
+        for(float i = 0; i < song.length * BeatDecimalValues.values[beatValue]; i += secPerBeat) {
+            // Multiply by 1000 to convert to milliseconds and multiply by beat divisor for timings based on beatValue and finally plus offset
+            sampleSets.Add((i * 1000 * (1 / BeatDecimalValues.values[beatValue])) + offset);
 
             GameObject marker = Instantiate(sampleMarker, sampleSpawnInterval, Quaternion.identity, transform);
             Marker markerScript = marker.GetComponent<Marker>();
@@ -102,24 +90,9 @@ public class Timeline : MonoBehaviour
             }
             sampleSpawnInterval += new Vector3(2f, 0f, 0f);
             index++;
+
+            markerSets.Add(marker);
         }
     }
     /******* End of Timeline Section *******/
-
-
-
-    /******* Start of Scrub Timeline Section *******/
-    private void UpdateScrubTimelineMaxValue()
-    {
-        scrubTimeline.SetMaxValue(audioManager.song.clip.samples);
-    }
-
-    public void ScrubMusic(int currentTimesample) {
-        audioManager.song.timeSamples = currentTimesample;
-    }
-
-    private void UpdateScrubTimelinePosition() {
-        scrubTimeline.SetSliderPosition(audioManager.song.timeSamples);
-    }
-     /******* End of Scrub Timeline Section *******/
 }

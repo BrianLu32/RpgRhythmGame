@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class ExportBeatmap : MonoBehaviour
 {
-    [SerializeField] private Timeline timelineInstance;
+    [SerializeField] private GameObject timelineObject;
+    private Timeline timelineInstance;
 
-    public void Export(List<float> sampleSets) {
-        foreach(var sampleSet in sampleSets) {
-            
+    void Start () {
+        timelineInstance = timelineObject.GetComponent<Timeline>();
+    }
+
+    public void Export() {
+        foreach(var marker in timelineInstance.markerSets) {
+            if(marker.GetComponent<Marker>().hasTimeStamp) {
+                
+            }
         }
     }
 }

@@ -12,8 +12,6 @@ public class TimelineController : MonoBehaviour
     [SerializeField] private AudioManager audioManager;
     private int currentSampleSetIndex = 0;
 
-    private int lastInterval;
-
     private LookAt lookAt;
     private int beatValueInt;
     public int NewBeatValueInt {
@@ -57,7 +55,7 @@ public class TimelineController : MonoBehaviour
         bool xKey = Input.GetKeyDown(KeyCode.X);
 
         // Determines what current timestamp the song is at
-        GameObject marker = lookAt.InteractRayCastMarker();
+        GameObject marker = timelineInstance.markerSets[currentSampleSetIndex];
 
         if((!altKey && !ctrlKey && scrollDirection != 0) || rightArrow || leftArrow) {
             // Prevent moving pass the beginning and end of timeline
@@ -118,9 +116,8 @@ public class TimelineController : MonoBehaviour
 
         // Plays a sound when there is a time stamp
         // Needs to look ahead by one marker to schedule the sound to play on time
-        GameObject nextMarker = GameObject.Find("Marker " + (currentSampleSetIndex + 1));
-        if(nextMarker.GetComponent<Marker>().hasTimeStamp) {
-            PlayHitSound(nextMarker);
+        if(timelineInstance.markerSets[currentSampleSetIndex + 1].GetComponent<Marker>().hasTimeStamp) {
+            PlayHitSound(timelineInstance.markerSets[currentSampleSetIndex + 1]);
         }
         
         // Checks song position to move timeline
@@ -128,7 +125,8 @@ public class TimelineController : MonoBehaviour
     }
 
     public void CheckForTime() {
-        float songPosition = (float)(audioManager.song.time + (audioManager.offset / 1000)) * 1000;
+        // float songPosition = (float)(audioManager.song.time + (audioManager.offset / 1000)) * 1000;
+        float songPosition = (audioManager.song.time * 1000 * (1 / BeatDecimalValues.values[(int)timelineInstance.currentBeatValue])) + audioManager.offset;
         if(songPosition >= timelineInstance.sampleSets[currentSampleSetIndex]) {
             transform.position += new Vector3(-2f, 0f, 0f);
             currentSampleSetIndex++;

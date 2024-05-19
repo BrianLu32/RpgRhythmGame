@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using SynchronizerData;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ public class ScrubTimeline : MonoBehaviour
     void Start()
     {
         slider.onValueChanged.AddListener((currentValue) => {
-            timeline.ScrubMusic((int)currentValue);
+            audioManager.ScrubMusic((int)currentValue);
             SetMarkerPosition(currentValue);
             SetAudioTimeText((int)currentValue);
         });
@@ -30,32 +31,34 @@ public class ScrubTimeline : MonoBehaviour
         
     }
 
-    public void SetMaxValue(int maxValue) {
+    public void SetMaxValue(float maxValue) {
         slider.maxValue = maxValue;
     }
 
-    public void SetSliderPosition(int currentValueInSamples) {
-        slider.SetValueWithoutNotify(currentValueInSamples);
-        SetAudioTimeText(currentValueInSamples);
+    /// <summary>
+    ///  Sets the slider value to the current song position in seconds without invoking slider listener
+    /// </summary>
+    /// <param name="currentSongPos">Measured in seconds</param>
+    public void SetSliderPosition(float currentSongPos) {
+        slider.SetValueWithoutNotify(currentSongPos);
+        SetAudioTimeText(currentSongPos);
     }
 
-    private void SetAudioTimeText(int currentValueInSamples) {
-        float timeInSeconds = currentValueInSamples / audioManager.song.clip.frequency;
-        // Debug.Log(timeInSeconds / 60f);
-        int mintues = (int)timeInSeconds / 60;
-        float seconds = timeInSeconds % 60f;
+    private void SetAudioTimeText(float currentSongPos) {
+        int mintues = (int)currentSongPos / 60;
+        int seconds = (int)currentSongPos % 60;
         audioTime.text = mintues.ToString("00") + ":" + seconds.ToString("00");
     }
 
-    private void SetMarkerPosition(float currentValueInSamples) {
-        float smallestDifference = 10000f;
+    private void SetMarkerPosition(float newSongPos) {
+        float newSongPosInSamples = (newSongPos * 1000 * BeatDecimalValues.values[(int)timeline.currentBeatValue]) + audioManager.offset;
+        float closest = timeline.sampleSets[0];
         int closestIndex = 0;
         for(int i = 0; i < timeline.sampleSets.Count; i++) {
-            if(Mathf.Abs(currentValueInSamples - timeline.sampleSets[i]) < smallestDifference) {
+            if(Mathf.Abs(timeline.sampleSets[i] - newSongPosInSamples) < Mathf.Abs(closest - newSongPosInSamples)) {
                 closestIndex = i;
             }
         }
         timelineController.SetMarkerIndex(closestIndex);
-        // timelineController.CheckForTime();
     }
 }
