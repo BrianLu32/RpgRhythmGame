@@ -52,15 +52,14 @@ public class Timeline : MonoBehaviour
         // Need to remove indexing in the future
         int index = 0;
         for(float i = 0; i < song.length * BeatDecimalValues.values[beatValue]; i += secPerBeat) {
-            // Multiply by 1000 to convert to milliseconds and multiply by beat divisor for timings based on beatValue and finally plus offset
-            sampleSets.Add((i * 1000 * (1 / BeatDecimalValues.values[beatValue])) + offset);
+            sampleSets.Add(audioManager.convertSongPosToSamplePos(i));
 
             GameObject marker = Instantiate(sampleMarker, sampleSpawnInterval, Quaternion.identity, transform);
             Marker markerScript = marker.GetComponent<Marker>();
             SpriteRenderer markerSpriteRenderer = marker.GetComponent<SpriteRenderer>();
             Vector3 currentMarkerScale = marker.transform.localScale;
 
-            markerScript.timeStamp = (i * 1000) + offset;
+            markerScript.timeStamp = audioManager.convertSongPosToSamplePos(i);
             markerScript.sampleSetIndex = index;
             marker.name = "Marker " + index;
             switch(index % 4)

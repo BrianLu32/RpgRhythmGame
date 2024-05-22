@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using SynchronizerData;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -12,6 +13,7 @@ public class AudioManager : MonoBehaviour
     private readonly string hitSoundBaseName = "Hit Source ";
 
     [SerializeField] private ScrubTimeline scrubTimeline;
+    [SerializeField] private Timeline timeline;
 
     void Start() {
         song = GetComponent<AudioSource>();
@@ -43,8 +45,18 @@ public class AudioManager : MonoBehaviour
 
     public void PlayHitSoundSource(GameObject marker) {
         GameObject hitSoundSource = GameObject.Find(hitSoundBaseName + marker.GetComponent<Marker>().sampleSetIndex);
-        float sampleSetPosInSec = (marker.GetComponent<Marker>().timeStamp - offset) / 1000f;
+        float sampleSetPosInSec = convertSamplePosToSongPos(marker.GetComponent<Marker>().timeStamp);
         hitSoundSource.GetComponent<AudioSource>().PlayScheduled(sampleSetPosInSec);
+    }
+
+    /******************* Helper Fuctions *******************/
+        // Multiply by 1000 to convert to milliseconds and multiply by beat divisor for timings based on beatValue and finally plus offset
+    public float convertSongPosToSamplePos(float songPos) {
+        return (songPos * 1000f * (1 / BeatDecimalValues.values[(int)timeline.currentBeatValue])) + offset;
+    }
+    
+    public float convertSamplePosToSongPos(float samplePos) {
+        return (samplePos - offset) / (1 / BeatDecimalValues.values[(int)timeline.currentBeatValue]) / 1000f;
     }
 
     /******* Start of Timeline Controller Section *******/
@@ -53,13 +65,13 @@ public class AudioManager : MonoBehaviour
             song.Pause();
         }
         else if(song.isPlaying && isControllerScrolling) {
-            float songPosInSec = (currentSampleSetPos / 1000) - offset;
+            float songPosInSec = convertSamplePosToSongPos(currentSampleSetPos);
             song.time = songPosInSec;
             song.Pause();
             song.Play();
         }
         else if(!song.isPlaying && isControllerScrolling) {
-            float songPosInSec = (currentSampleSetPos - offset) / 1000;
+            float songPosInSec = convertSamplePosToSongPos(currentSampleSetPos);
             song.time = songPosInSec;
         }
         else {

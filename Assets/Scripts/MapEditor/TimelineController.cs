@@ -71,7 +71,6 @@ public class TimelineController : MonoBehaviour
             if(rightArrow) transform.position += new Vector3(-2f, 0f, 0f);
             if(leftArrow) transform.position += new Vector3(2f, 0f, 0f);
 
-            //If audio is playing
             audioManager.PlayMusic(timelineInstance.sampleSets[currentSampleSetIndex], true);
         }
         if(altKey && scrollDirection != 0) {
@@ -125,8 +124,7 @@ public class TimelineController : MonoBehaviour
     }
 
     public void CheckForTime() {
-        // float songPosition = (float)(audioManager.song.time + (audioManager.offset / 1000)) * 1000;
-        float songPosition = (audioManager.song.time * 1000 * (1 / BeatDecimalValues.values[(int)timelineInstance.currentBeatValue])) + audioManager.offset;
+        float songPosition = audioManager.convertSongPosToSamplePos(audioManager.song.time);
         if(songPosition >= timelineInstance.sampleSets[currentSampleSetIndex]) {
             transform.position += new Vector3(-2f, 0f, 0f);
             currentSampleSetIndex++;

@@ -378,6 +378,7 @@ MonoBehaviour:
   offset: 20212
   hitSound: {fileID: 8300000, guid: db87ce1495df64a4e8e736eef8933b2d, type: 3}
   scrubTimeline: {fileID: 47081095}
+  timeline: {fileID: 225033101}
 --- !u!1 &217355992
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,7 +515,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3410912e74382d4e95f23eaef6b7d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrubTimeline: {fileID: 47081095}
   audioManager: {fileID: 188111798}
   currentBeatValue: 1
   sampleSets: []

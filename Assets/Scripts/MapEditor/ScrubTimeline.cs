@@ -51,7 +51,7 @@ public class ScrubTimeline : MonoBehaviour
     }
 
     private void SetMarkerPosition(float newSongPos) {
-        float newSongPosInSamples = (newSongPos * 1000 * BeatDecimalValues.values[(int)timeline.currentBeatValue]) + audioManager.offset;
+        float newSongPosInSamples = audioManager.convertSongPosToSamplePos(newSongPos);
         float closest = timeline.sampleSets[0];
         int closestIndex = 0;
         for(int i = 0; i < timeline.sampleSets.Count; i++) {
