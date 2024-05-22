@@ -51,8 +51,16 @@ public class ScrubTimeline : MonoBehaviour
         audioTime.text = mintues.ToString("00") + ":" + seconds.ToString("00") + ":" + milliseconds.ToString("000");
     }
 
+
+
+    /******* Start of Timeline Controller Section *******/
+    /// <summary>
+    ///     Updates the index position of the timeline to adjusts timeline position 
+    ///     basone on song position. 'newSongPos' is converted to seconds
+    /// </summary>
+    /// <param name="newSongPos"></param>
     private void SetMarkerPosition(float newSongPos) {
-        float newSongPosInSamples = audioManager.convertSongPosToSamplePos(newSongPos);
+        float newSongPosInSamples = audioManager.convertSongPosToSamplePos(newSongPos / 1000);
         float closest = timeline.sampleSets[0];
         int closestIndex = 0;
         for(int i = 0; i < timeline.sampleSets.Count; i++) {
@@ -62,4 +70,5 @@ public class ScrubTimeline : MonoBehaviour
         }
         timelineController.SetMarkerIndex(closestIndex);
     }
+    /******* End of Timeline Controller Section *******/
 }
