@@ -95,13 +95,21 @@ public class AudioManager : MonoBehaviour
         song.time = newSongPos;
     }
 
+    /// <summary>
+    ///     Sets the slider max value.
+    ///     Value is converted to miliseconds
+    /// </summary>
     private void UpdateScrubTimelineMaxValue()
     {
-        scrubTimeline.SetMaxValue(song.clip.length);
+        scrubTimeline.SetMaxValue(song.clip.length * 1000);
     }
 
+    /// <summary>
+    ///     Updates the slider value based on song position.
+    ///     Value is converted to miliseconds
+    /// </summary>
     private void UpdateScrubTimelinePosition() {
-        scrubTimeline.SetSliderPosition(song.time);
+        scrubTimeline.SetSliderPosition(song.time * 1000);
     }
     /******* End of Scrub Timeline Section *******/
 }

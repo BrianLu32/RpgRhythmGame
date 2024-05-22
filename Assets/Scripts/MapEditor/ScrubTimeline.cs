@@ -22,7 +22,7 @@ public class ScrubTimeline : MonoBehaviour
             SetAudioTimeText((int)currentValue);
         });
 
-        audioTime.text = "00:00";
+        audioTime.text = "00:00:000";
     }
 
     // Update is called once per frame
@@ -45,9 +45,10 @@ public class ScrubTimeline : MonoBehaviour
     }
 
     private void SetAudioTimeText(float currentSongPos) {
-        int mintues = (int)currentSongPos / 60;
-        int seconds = (int)currentSongPos % 60;
-        audioTime.text = mintues.ToString("00") + ":" + seconds.ToString("00");
+        int milliseconds = (int)currentSongPos % 1000;
+        int mintues = (int)(currentSongPos / 1000) / 60;
+        int seconds = (int)(currentSongPos / 1000) % 60;
+        audioTime.text = mintues.ToString("00") + ":" + seconds.ToString("00") + ":" + milliseconds.ToString("000");
     }
 
     private void SetMarkerPosition(float newSongPos) {
