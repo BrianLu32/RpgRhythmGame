@@ -90,9 +90,9 @@ public class AudioManager : MonoBehaviour
     /// <summary>
     ///     Sets song position in seconds
     /// </summary>
-    /// <param name="newSongPos"></param>
+    /// <param name="newSongPos">Measured in milliseconds</param>
     public void ScrubMusic(float newSongPos) {
-        song.time = newSongPos;
+        song.time = newSongPos / 1000;
     }
 
     /// <summary>

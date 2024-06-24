@@ -38,12 +38,16 @@ public class ScrubTimeline : MonoBehaviour
     /// <summary>
     ///  Sets the slider value to the current song position in seconds without invoking slider listener
     /// </summary>
-    /// <param name="currentSongPos">Measured in seconds</param>
+    /// <param name="currentSongPos">Measured in milliseconds</param>
     public void SetSliderPosition(float currentSongPos) {
         slider.SetValueWithoutNotify(currentSongPos);
         SetAudioTimeText(currentSongPos);
     }
 
+    /// <summary>
+    ///  Sets the slider text alue to the current song position
+    /// </summary>
+    /// <param name="currentSongPos">Measured in milliseconds</param>
     private void SetAudioTimeText(float currentSongPos) {
         int milliseconds = (int)currentSongPos % 1000;
         int mintues = (int)(currentSongPos / 1000) / 60;
